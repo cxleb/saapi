@@ -21,7 +21,7 @@ context->play();
 
 ## Building
 
-simply add `saapi.c` to your project and ensure your linking with `ole32.lib` and `winmm.lib`
+simply add `saapi.cpp` to your project and ensure your linking with `ole32.lib` and `winmm.lib`
 
 ## TODO
 - Audio input
