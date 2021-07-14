@@ -49,11 +49,11 @@ TCHAR getChar(void)
 int main(int argc, char** argv)
 {
 
-    auto context = SAAPI::getContext();
+    auto renderer = SAAPI::getRenderer();
 
     freq=440.0;
 
-    context->setBufferAvailableCallback([](float* buffer, unsigned int size){
+    renderer->setBufferAvailableCallback([](float* buffer, unsigned int size){
         for(int i = 0; i < size; i++)
         {
             float formant = sin(3.1415926535 * (((double)phase/96000.0)*(freq/4.0))); // 96kHz audio ytbs
@@ -65,7 +65,7 @@ int main(int argc, char** argv)
         }
     });
 
-    context->start();
+    renderer->start();
 
     printf("Z-X-C-V-B-N-M -> A-B-C-D-E-F-G\n");
     while(1)

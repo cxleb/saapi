@@ -12,39 +12,51 @@ typedef void(* BufferAvailableCallback) (float*, unsigned int);
 
 namespace SAAPI 
 {
-    class SAAPIContext
+    class Context;
+
+    class AudioRenderer
     {
-    friend SAAPIContext* getContext();
+    friend class Context;
+    friend DWORD WINAPI AudioRenderThreadProc(LPVOID Param);
+    public:
+        void start();
+        void stop();
+        void setBufferAvailableCallback(BufferAvailableCallback callback);
+        void threadProc();
+    private:
+        IMMDevice* pAudioDevice;
+        IAudioClient* pRenderClient;
+        IAudioRenderClient* pRenderer;
+        bool running; // this is protected by a mutex !beware!
+        unsigned int bufferSize;
+        BufferAvailableCallback m_Callback;
+        HANDLE hRenderThread;
+        HANDLE hBufferReadyEvent;
+    };
+
+    class Context
+    {
+    friend AudioRenderer* getRenderer();
     friend void closeContext();
-    friend DWORD WINAPI WinThreadProc(LPVOID Param);
+    friend void createContext();
+
     private: // methods
         void init();
         void destroy();
 
-        void threadProc();
-    public: // methods
-        SAAPIContext();
-        void start();
-        void stop();
-        void setBufferAvailableCallback(BufferAvailableCallback callback);
-        void waitForAudio();
     private: // members
         IMMDeviceEnumerator* pEnumerator;
         IMMDeviceCollection* pCollection;
-        IMMDevice* pAudioOutputDevice;
-        IAudioClient* pClient;
-        IAudioRenderClient* pRenderer;
-        HANDLE hBufferReadyEvent;
-        HANDLE hRunningMutex;
-        HANDLE hAudioThread;
-        bool running; // this is protected by a mutex !beware!
-        unsigned int bufferSize;
-        BufferAvailableCallback m_Callback;
-    public: // members
 
+        AudioRenderer* pAudioRenderer;
+
+        IMMDevice* pAudioInputDevice;
+        IAudioClient* pCaptureClient;
+        IAudioCaptureClient* pCapturer;
+        
     };
 
-    SAAPIContext* getContext();
+    AudioRenderer* getRenderer();
     void closeContext();
 
 }
