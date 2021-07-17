@@ -46,7 +46,8 @@ TCHAR getChar(void)
     return(ch);
 }
 
-float voiceBuffer[100000];
+float voiceBufferLeft[100000];
+//float voiceBufferRight[100000];
 int writehead1 = 50000;
 int writehead2 = 25000;
 int writehead3 = 0;
@@ -69,10 +70,10 @@ int main(int argc, char** argv)
             // buffer[i*2] = sample; // left 
             // buffer[i*2 + 1] = sample; // right or left and im wrong
             // phase++;
-            buffer[i*2] = voiceBuffer[renderat++]; // left 
+            buffer[i*2] = voiceBufferLeft[renderat]; // left 
             incrementAndClamp(renderat);
-            buffer[i*2 + 1] = voiceBuffer[renderat++]; // right or left and im wrong
-            incrementAndClamp(renderat);
+            buffer[i*2 + 1] = 0;//voiceBuffer[renderat++]; // right or left and im wrong
+            //incrementAndClamp(renderat);
         }
     });
 
@@ -85,20 +86,20 @@ int main(int argc, char** argv)
             // buffer[i*2] = sample; // left 
             // buffer[i*2 + 1] = sample; // right or left and im wrong
             // phase++;
-            voiceBuffer[writehead1] = voiceBuffer[writehead1] * 0.1f + buffer[i*2]; // left 
+            voiceBufferLeft[writehead1] = voiceBufferLeft[writehead1] * 0.1f + buffer[i*2]; // left 
             incrementAndClamp(writehead1);
-            voiceBuffer[writehead1] = voiceBuffer[writehead1] * 0.1f + buffer[i*2+1]; // right or left and im wrong
-            incrementAndClamp(writehead1);
+            //voiceBuffer[writehead1] = voiceBuffer[writehead1] * 0.1f + buffer[i*2+1]; // right or left and im wrong
+            //incrementAndClamp(writehead1);
 
-            voiceBuffer[writehead2] = voiceBuffer[writehead2] * 0.9f + buffer[i*2] * 0.5; // left 
+            voiceBufferLeft[writehead2] = voiceBufferLeft[writehead2] * 0.9f + buffer[i*2] * 0.5; // left 
             incrementAndClamp(writehead2);
-            voiceBuffer[writehead2] = voiceBuffer[writehead2] * 0.9f + buffer[i*2+1] * 0.5f; // right or left and im wrong
-            incrementAndClamp(writehead2);
+            //voiceBuffer[writehead2] = voiceBuffer[writehead2] * 0.9f + buffer[i*2+1] * 0.5f; // right or left and im wrong
+            //incrementAndClamp(writehead2);
 
-            voiceBuffer[writehead3] = voiceBuffer[writehead3] * 0.9f + buffer[i*2] * 0.125; // left 
+            voiceBufferLeft[writehead3] = voiceBufferLeft[writehead3] * 0.9f + buffer[i*2] * 0.125; // left 
             incrementAndClamp(writehead3);
-            voiceBuffer[writehead3] = voiceBuffer[writehead3] * 0.9f + buffer[i*2+1] * 0.125f; // right or left and im wrong
-            incrementAndClamp(writehead3);
+            //voiceBuffer[writehead3] = voiceBuffer[writehead3] * 0.9f + buffer[i*2+1] * 0.125f; // right or left and im wrong
+            //incrementAndClamp(writehead3);
         }
     });
 
